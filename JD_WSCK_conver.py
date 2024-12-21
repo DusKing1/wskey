@@ -110,18 +110,38 @@ def send_notification(title, content,summary):
         printf(res.text)
 
 def get_sign_wskey():
+    # 请求体
     body = {
-        "fn":"genToken",
-        "body":{"url": "https://plogin.m.jd.com/jd-mlogin/static/html/appjmp_blank.html"}
+        "fn": "genToken",
+        "body": {"url": "https://plogin.m.jd.com/jd-mlogin/static/html/appjmp_blank.html"}
     }
     headers = {"user-agent": UserAgent}
+    
     try:
+        # 打印请求信息
+        print("Sending POST request to:", signurl)
+        print("Request Headers:", headers)
+        print("Request Body:", body)
+
+        # 发起请求
         url = signurl
-        data = post(url, headers=headers, json=body).json()
+        response = post(url, headers=headers, json=body)
+        
+        # 打印响应状态码和响应内容
+        print("Response Status Code:", response.status_code)
+        print("Response Text:", response.text)
+        
+        # 如果响应成功，解析 JSON
+        data = response.json()
         sign = data['body']
+        
+        # 打印获取到的 sign
+        print("Received sign:", sign)
     except Exception as error:
+        # 捕获异常并打印详细信息
         print(f"【错误】获取sign、body时：\n{error}\n将使用固定sign、body进行获取cookie")
         sign = "client=apple&clientVersion=10.0.10&uuid=a1e779b4f56e4fd3b51af4b1d3ca3f13&st=1635391223795&sign=a1d6386f9455999594208ba36541ffda&sv=120"
+        
     return sign
 
 def getcookie_wskey(key):
